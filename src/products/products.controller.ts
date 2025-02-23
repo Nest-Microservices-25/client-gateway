@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,7 +10,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { catchError, throwError } from 'rxjs';
 import { PaginationDto } from 'src/common';
 import { PRODUCT_SERVICE } from 'src/config';
 
@@ -31,7 +33,13 @@ export class ProductsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return `Product ${id}`;
+    console.log('🚀 ~ findOne ~ id:', id);
+    return this.productsClient.send({ cmd: 'get-product-by-id' }, { id }).pipe(
+      catchError((error) => {
+        console.log('🚀 ~ findOne ~ error:', error);
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Delete(':id')
