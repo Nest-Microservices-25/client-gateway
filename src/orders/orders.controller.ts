@@ -16,6 +16,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 import { PaginationDto } from 'src/common';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderPaginationDto } from './dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -34,9 +35,9 @@ export class OrdersController {
   }
 
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
-    console.log('🚀 ~ findAll ~ paginationDto:', paginationDto);
-    return this.ordersClient.send({ cmd: 'get-orders' }, paginationDto).pipe(
+  findAll(@Query() orderPaginationDto: OrderPaginationDto) {
+    console.log('🚀 ~ findAll ~ paginationDto:', orderPaginationDto);
+    return this.ordersClient.send({ cmd: 'get-orders' }, orderPaginationDto).pipe(
       catchError((error) => {
         console.log('[ERRORX]', error);
         throw new RpcException(error);
