@@ -73,4 +73,18 @@ export class OrdersController {
         }),
       );
   }
+  @Patch(':id')
+  changeStatus(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() statusDto: StatusDto,
+  ) {
+    return this.ordersClient
+      .send({ cmd: 'update-status' }, { id, ...statusDto })
+      .pipe(
+        catchError((error) => {
+          console.log('[ERROR]', error);
+          throw new RpcException(error);
+        }),
+      );
+  }
 }
