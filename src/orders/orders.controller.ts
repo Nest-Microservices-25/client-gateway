@@ -49,6 +49,7 @@ export class OrdersController {
 
   @Get('id/:id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
+    console.log("🚀 ~ findOne ~ id:", id)
     return this.ordersClient.send({ cmd: 'get-order-by-id' }, { id }).pipe(
       catchError((error) => {
         console.log('[ERROR]', error);
